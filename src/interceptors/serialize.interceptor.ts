@@ -9,8 +9,11 @@ import { Observable } from 'rxjs';
 import { plainToClass } from 'class-transformer';
 import { UserDto } from '../users/dto/user.dto';
 
+export function Serialize(dto: any) {
+  return UseInterceptors(new SerializeInterceptor(dto));
+}
 export class SerializeInterceptor implements NestInterceptor {
-  //   constructor(private dto: any) {}
+  constructor(private dto: any) {}
 
   intercept(
     context: ExecutionContext,
@@ -18,7 +21,7 @@ export class SerializeInterceptor implements NestInterceptor {
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
       map((data: any) => {
-        return plainToClass(UserDto, data, {
+        return plainToClass(this.dto, data, {
           excludeExtraneousValues: true,
         });
       }),

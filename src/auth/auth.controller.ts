@@ -11,4 +11,9 @@ export class AuthController {
     // console.log('body', body);
     return this.authService.signup(body);
   }
+
+  @Post('/signin')
+  loginUser(@Body() body: { email: string; password: string }) {
+    return this.authService.signin(body.email, body.password);
+  }
 }

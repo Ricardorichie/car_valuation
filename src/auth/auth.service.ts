@@ -19,9 +19,7 @@ export class AuthService {
   async signup(body: CreateUserDto) {
     const { email, password } = body;
     // See if email is in use
-    const users = await this.usersRepository.find({
-      where: { email },
-    });
+    const users = await this.usersService.find(email);
     if (users.length) {
       throw new BadRequestException('Email in use');
     }
@@ -46,7 +44,21 @@ export class AuthService {
     return newUser;
   }
 
-  async signin() {
+  async signin(email: string, password: string) {
     // Implement sign in
+    const [user] = await this.usersService.find(email);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const [salt, storedHash] = user.password.split('.');
+
+    const hashedPassword = (await scrypt(password, salt, 32)) as Buffer;
+
+    if (storedHash !== hashedPassword.toString('hex')) {
+      throw new BadRequestException('Wrong login credentials');
+    } else {
+      return user;
+    }
   }
 }

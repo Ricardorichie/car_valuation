@@ -17,7 +17,7 @@ import { UpdateUserDto } from './dto/update-user-dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
 
-@Controller('auth') //changed from 'users' to 'auth' to create a new path for authentication
+@Controller('user') //changed from 'users' to 'auth' to create a new path for authentication
 @Serialize(UserDto) //added to serialize the response data to the UserDto class
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

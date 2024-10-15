@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../../src/users/dto/create-user.dto';
-import { UsersService } from '../../src/users/users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../users/user.entity';
+import { UsersService } from '../users/users.service';
 
 describe('AuthService', () => {
   it('can be instantiated', async () => {

@@ -10,6 +10,7 @@ import {
   Post,
   Query,
   UseInterceptors,
+  Session,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,6 +23,19 @@ import { UserDto } from './dto/user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('/whoami')
+  whoAmI(@Session() session: any) {
+    return this.usersService.findOne(session.userId);
+  }
+
+  @Get('/colors/:color')
+  setColor(@Param('color') color: string, @Session() session: any) {
+    session.color = color;
+  }
+  @Get('/colors')
+  getColor(@Session() session: any) {
+    return session.color;
+  }
   @Post('/signup')
   createUser(@Body() body: CreateUserDto) {
     // console.log('body', body);

@@ -67,18 +67,8 @@ describe('AuthService', () => {
     ).rejects.toThrow(BadRequestException);
   });
   it('throws an error if signin is called with an unused email', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([
-        {
-          id: 1,
-          email: 'asdflkj@asjhdlfkj.com',
-          password: 'passdflkj',
-          name: 'name',
-        } as User,
-      ]);
-
     await expect(
       authService.signin('asdflkj@asdlfkj.com', 'passdflkj'),
-    ).rejects.toThrow(BadRequestException);
+    ).rejects.toThrow(NotFoundException);
   });
 });

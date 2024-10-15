@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from '../../src/users/dto/create-user.dto';
 import { scrypt as _scrypt, randomBytes } from 'crypto';
 import { promisify } from 'util';
@@ -48,7 +52,7 @@ export class AuthService {
     // Implement sign in
     const [user] = await this.usersService.find(email);
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new NotFoundException('User not found');
     }
 
     const [salt, storedHash] = user.password.split('.');

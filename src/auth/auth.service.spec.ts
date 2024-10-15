@@ -5,11 +5,13 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../users/user.entity';
 import { UsersService } from '../users/users.service';
 import { before } from 'node:test';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let authService: AuthService;
+  let fakeUsersService: Partial<UsersService>;
   beforeEach(async () => {
-    const fakeUsersService: Partial<UsersService> = {
+    fakeUsersService = {
       find: () => Promise.resolve([]),
       create: (body: CreateUserDto) =>
         Promise.resolve({ id: 1, ...body } as User),
@@ -49,5 +51,34 @@ describe('AuthService', () => {
     const [salt, hash] = user.password.split('.');
     expect(salt).toBeDefined();
     expect(hash).toBeDefined();
+  });
+  it('throws an error if user signs up with email that is in use', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([
+        { id: 1, email: 'asdf@asdf.com', password: '1', name: 'name' } as User,
+      ]);
+
+    await expect(
+      authService.signup({
+        email: 'asdf@asdf.com',
+        password: '1',
+        name: 'name',
+      }),
+    ).rejects.toThrow(BadRequestException);
+  });
+  it('throws an error if signin is called with an unused email', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([
+        {
+          id: 1,
+          email: 'asdflkj@asjhdlfkj.com',
+          password: 'passdflkj',
+          name: 'name',
+        } as User,
+      ]);
+
+    await expect(
+      authService.signin('asdflkj@asdlfkj.com', 'passdflkj'),
+    ).rejects.toThrow(BadRequestException);
   });
 });

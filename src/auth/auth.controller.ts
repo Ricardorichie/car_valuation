@@ -2,6 +2,8 @@ import { Body, Controller, Get, Post, Session } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
+import { User } from 'src/users/user.entity';
+import { CurrentUser } from 'src/users/decorators/current-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -10,9 +12,15 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
+  // @Get('/whoami')
+  // whoAmI(@Session() session: any) {
+  //   return this.usersService.findOne(session.userId);
+  // }
+
   @Get('/whoami')
-  whoAmI(@Session() session: any) {
-    return this.usersService.findOne(session.userId);
+  //custom decorator
+  whoAmI(@CurrentUser() user: User) {
+    return user;
   }
 
   @Post('/signup')

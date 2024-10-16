@@ -71,4 +71,33 @@ describe('AuthService', () => {
       authService.signin('asdflkj@asdlfkj.com', 'passdflkj'),
     ).rejects.toThrow(NotFoundException);
   });
+  it('throws if an invalid password is provided', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([
+        {
+          id: 1,
+          email: 'asfasdf@gmail.com',
+          password: 'salt.hash',
+          name: 'name',
+        } as User,
+      ]);
+    await expect(
+      authService.signin('asfasdf@gmail.com', 'salt.hash'),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('returns a user if correct password', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([
+        {
+          id: 1,
+          email: 'user_email@gmail.com',
+          password:
+            'af8e12f7ce975c2c.e1e27bfb3b5d5b8fc8d8f61019191e9bdd876fcc8314eca0066458772ce9092c',
+          name: 'name',
+        } as User,
+      ]);
+    const user = await authService.signin('user_email@gmail.com', 'salt.hash');
+    expect(user).toBeDefined();
+  });
 });

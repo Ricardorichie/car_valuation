@@ -84,11 +84,11 @@ describe('AuthService', () => {
   it('throws if an invalid password is provided', async () => {
     await authService.signup({
       email: 'asdf@asdf.com',
-      password: 'password',
+      password: '1',
       name: 'name',
     }),
       await expect(
-        authService.signin('asdf@asdf.com', 'password'),
+        authService.signin('asdf@asdf.com', 'salt.hash'),
       ).rejects.toThrow(BadRequestException);
   });
 

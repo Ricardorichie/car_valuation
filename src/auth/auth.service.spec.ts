@@ -11,10 +11,20 @@ describe('AuthService', () => {
   let authService: AuthService;
   let fakeUsersService: Partial<UsersService>;
   beforeEach(async () => {
+    const users: User[] = [];
     fakeUsersService = {
-      find: () => Promise.resolve([]),
-      create: (body: CreateUserDto) =>
-        Promise.resolve({ id: 1, ...body } as User),
+      find: (email: string) => {
+        const filteredUsers = users.filter((user) => user.email === email);
+        return Promise.resolve(filteredUsers);
+      },
+      create: (body: CreateUserDto) => {
+        const user = {
+          id: Math.floor(Math.random() * 999999),
+          ...body,
+        } as User;
+        users.push(user);
+        return Promise.resolve(user);
+      },
     };
     // Mock the UserRepository as well
     const fakeUserRepository = {
@@ -87,17 +97,13 @@ describe('AuthService', () => {
   });
 
   it('returns a user if correct password', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([
-        {
-          id: 1,
-          email: 'user_email@gmail.com',
-          password:
-            'af8e12f7ce975c2c.e1e27bfb3b5d5b8fc8d8f61019191e9bdd876fcc8314eca0066458772ce9092c',
-          name: 'name',
-        } as User,
-      ]);
-    const user = await authService.signin('user_email@gmail.com', 'salt.hash');
+    await authService.signup({
+      email: 'asfasdf@gmail.com',
+      password: 'salt.hash',
+      name: 'name',
+    });
+
+    const user = await authService.signin('asfasdf@gmail.com', 'salt.hash');
     expect(user).toBeDefined();
   });
 });

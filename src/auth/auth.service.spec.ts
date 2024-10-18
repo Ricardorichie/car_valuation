@@ -63,11 +63,11 @@ describe('AuthService', () => {
     expect(hash).toBeDefined();
   });
   it('throws an error if user signs up with email that is in use', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([
-        { id: 1, email: 'asdf@asdf.com', password: '1', name: 'name' } as User,
-      ]);
-
+    await authService.signup({
+      email: 'asdf@asdf.com',
+      password: '1',
+      name: 'name',
+    });
     await expect(
       authService.signup({
         email: 'asdf@asdf.com',
@@ -82,18 +82,14 @@ describe('AuthService', () => {
     ).rejects.toThrow(NotFoundException);
   });
   it('throws if an invalid password is provided', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([
-        {
-          id: 1,
-          email: 'asfasdf@gmail.com',
-          password: 'salt.hash',
-          name: 'name',
-        } as User,
-      ]);
-    await expect(
-      authService.signin('asfasdf@gmail.com', 'salt.hash'),
-    ).rejects.toThrow(BadRequestException);
+    await authService.signup({
+      email: 'asdf@asdf.com',
+      password: 'password',
+      name: 'name',
+    }),
+      await expect(
+        authService.signin('asdf@asdf.com', 'password'),
+      ).rejects.toThrow(BadRequestException);
   });
 
   it('returns a user if correct password', async () => {

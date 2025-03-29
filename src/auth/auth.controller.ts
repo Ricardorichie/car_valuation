@@ -7,11 +7,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/user.entity';
-import { CurrentUser } from 'src/users/decorators/current-user.decorator';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { AuthGuard } from '../guards/auth.guard';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/user.entity';
 
 @Controller('auth')
 export class AuthController {

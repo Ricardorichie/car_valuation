@@ -1,6 +1,5 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -9,7 +8,6 @@ import {
   Patch,
   Post,
   Query,
-  UseInterceptors,
   Session,
 } from '@nestjs/common';
 import { UsersService } from './users.service';

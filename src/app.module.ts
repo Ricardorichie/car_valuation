@@ -41,10 +41,6 @@ import { CurrentUserInterceptor } from './users/interceptos/current-user.interce
   providers: [
     AppService,
     {
-      provide: APP_INTERCEPTOR,
-      useClass: CurrentUserInterceptor,
-    },
-    {
       provide: APP_PIPE,
       useValue: new ValidationPipe({
         whitelist: true,

@@ -18,6 +18,7 @@ export class ReportsService {
       .andWhere('model = :model', { model: estimateDto.model })
       .andWhere('lng - :lng BETWEEN -5 AND 5', { lng: estimateDto.lng }) //5km
       .andWhere('lat - :lat BETWEEN -5 AND 5', { lat: estimateDto.lat }) //5km
+      .andWhere('approved IS TRUE')
       .orderBy('mileage - :mileage', 'DESC')
       .setParameters({ mileage: estimateDto.mileage })
       .limit(3)

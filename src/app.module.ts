@@ -9,6 +9,7 @@ import { ReportsModule } from './reports/reports.module';
 import { User } from './users/user.entity';
 import { Report } from './reports/report.entity';
 import { AuthModule } from './auth/auth.module';
+import { TypeOrmConfigService } from './config/typeorm.config';
 const cookieSession = require('cookie-session');
 
 @Module({
@@ -17,15 +18,18 @@ const cookieSession = require('cookie-session');
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'sqlite',
-        database: config.get<string>('DB_NAME'),
-        entities: [User, Report],
-        synchronize: true,
-      }),
-    }),
+    TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
+    // TypeOrmModule.forRootAsync({
+    //   inject: [ConfigService],
+    //   useFactory: (config: ConfigService) => ({
+    //     type: 'sqlite',
+    //     database: config.get<string>('DB_NAME'),
+    //     entities: [User, Report],
+    //     synchronize: true, // removed because it is not recommended for production
+    //     logging: config.get<string>('DB_LOGGING') === 'true',
+    //   }),
+    // }),
+
     // TypeOrmModule.forRoot({
     //   type: 'sqlite',
     //   database: 'db.sqlite',
